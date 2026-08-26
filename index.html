@@ -159,7 +159,22 @@
 <!-- NAV -->
 <nav>
   <span class="nav-brand">Villa Arancio · Frascati (RM)</span>
-  <a href="#contatti" class="nav-cta">Richiedi informazioni</a>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <!-- ✏️ PER CAMBIARE STATO: sostituisci "DISPONIBILE" con "OCCUPATA"
+         e cambia il colore da #1D5C38 a #7B1F1F -->
+    <span id="badge-disponibilita" style="
+      font-family:var(--fm);
+      font-size:.62rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      background:#1D5C38;
+      color:#8BB894;
+      padding:.35rem .9rem;
+      border-radius:2px;
+      white-space:nowrap;
+    ">● DISPONIBILE</span>
+    <a href="#contatti" class="nav-cta">Richiedi informazioni</a>
+  </div>
 </nav>
 
 <!-- HERO -->
