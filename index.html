@@ -88,23 +88,60 @@
     .g-row.h300 { height:300px; }
     .g-row.h340 { height:340px; }
     .g-row + .g-row { margin-top:4px; }
-    .g-item { overflow:hidden; }
+    .g-item { overflow:hidden; cursor:pointer; }
     .g-item img { width:100%; height:100%; object-fit:cover; transition:transform .5s; display:block; }
     .g-item:hover img { transform:scale(1.03); }
     /* Hero item grande */
     .g-hero { display:grid; grid-template-columns:2fr 1fr; gap:4px; height:460px; }
-    .g-hero .main { overflow:hidden; }
+    .g-hero .main { overflow:hidden; cursor:pointer; }
     .g-hero .main img { width:100%; height:100%; object-fit:cover; transition:transform .5s; }
     .g-hero .main:hover img { transform:scale(1.03); }
     .g-hero .side { display:grid; grid-template-rows:1fr 1fr; gap:4px; }
     .g-hero .side .g-item { height:100%; }
+
+    /* MOBILE GALLERY — foto a piena altezza naturale, 1 colonna */
     @media(max-width:640px){
-      .g-row.cols-3,.g-row.cols-4,.g-row.cols-5 { grid-template-columns:1fr 1fr; height:auto!important; }
-      .g-row.cols-2 { height:auto!important; }
-      .g-row .g-item { height:200px; }
+      .g-row { display:flex!important; flex-direction:column!important; height:auto!important; }
+      .g-row .g-item { height:auto!important; width:100%; }
+      .g-row .g-item img { height:auto!important; max-height:80vw; object-fit:cover; }
       .g-hero { grid-template-columns:1fr; height:auto; }
-      .g-hero .side { grid-template-columns:1fr 1fr; grid-template-rows:auto; }
-      .g-hero .side .g-item { height:180px; }
+      .g-hero .main { height:60vw; }
+      .g-hero .side { grid-template-columns:1fr 1fr; grid-template-rows:auto; height:auto; }
+      .g-hero .side .g-item { height:45vw; }
+      /* Bagni — portrait, altezza maggiore su mobile */
+      .g-item img[src*="bag-"] { max-height:110vw!important; object-position:center top; }
+      .notte-grid { grid-template-columns:1fr!important; height:auto!important; }
+      .notte-grid div { height:60vw; }
+    }
+
+    /* LIGHTBOX */
+    .lb-overlay {
+      display:none; position:fixed; inset:0; z-index:9999;
+      background:rgba(0,0,0,.92); cursor:zoom-out;
+      align-items:center; justify-content:center;
+    }
+    .lb-overlay.open { display:flex; }
+    .lb-img {
+      max-width:95vw; max-height:92vh;
+      object-fit:contain; display:block;
+      box-shadow:0 0 60px rgba(0,0,0,.8);
+      cursor:default;
+    }
+    .lb-close {
+      position:fixed; top:1rem; right:1.2rem;
+      font-family:var(--fm); font-size:1.4rem;
+      color:var(--gold); cursor:pointer;
+      background:rgba(8,12,24,.7); border:1px solid var(--gold-dim);
+      width:2.4rem; height:2.4rem;
+      display:flex; align-items:center; justify-content:center;
+      border-radius:2px; z-index:10000;
+      transition:background .2s;
+    }
+    .lb-close:hover { background:var(--gold); color:var(--bg); }
+    .lb-caption {
+      position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%);
+      font-family:var(--fm); font-size:.62rem; letter-spacing:.12em;
+      color:var(--muted); text-align:center; z-index:10000;
     }
 
     /* FULL WIDTH PHOTO */
@@ -511,5 +548,40 @@
   <p class="footer-txt">VILLA ARANCIO · VIA FRANCESCO VALENTINI 24 · 00044 FRASCATI (RM) · AFFITTO PRIVATO</p>
 </footer>
 <div class="gold-bar"></div>
+<!-- LIGHTBOX -->
+<div class="lb-overlay" id="lb" onclick="closeLB()">
+  <span class="lb-close" onclick="closeLB()">✕</span>
+  <img class="lb-img" id="lb-img" src="" alt="" onclick="event.stopPropagation()">
+  <p class="lb-caption" id="lb-cap"></p>
+</div>
+
+<script>
+  // Apri lightbox su click di qualsiasi img nella galleria
+  document.querySelectorAll(
+    '.g-item img, .g-hero .main img, .notte-grid img, .photo-full'
+  ).forEach(img => {
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', e => {
+      e.stopPropagation();
+      openLB(img.src, img.alt);
+    });
+  });
+
+  function openLB(src, alt) {
+    document.getElementById('lb-img').src = src;
+    document.getElementById('lb-cap').textContent = alt || '';
+    document.getElementById('lb').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLB() {
+    document.getElementById('lb').classList.remove('open');
+    document.getElementById('lb-img').src = '';
+    document.body.style.overflow = '';
+  }
+  // Chiudi con ESC
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLB();
+  });
+</script>
 </body>
 </html>
